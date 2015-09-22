@@ -4,8 +4,8 @@
   "dependencies": {
     "express": "^4.10.4",
     "geoip-native": "^0.0.8",
-    "mongodb": "^1.4.23",
-    "mongoose": "3.8.20",
+    "mongodb": "^1.4.38",
+    "mongoose": "3.8.33",
     "request": "2.49.0",
     "body-parser": "1.10.2"
   },
