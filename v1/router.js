@@ -1,6 +1,7 @@
 var url = require("url"),
     output = require(__dirname + "/output.js"),
     api = require(__dirname + "/../api"),
+    util = require("util"),
     games = api.games,
 	requestauth = api.requestauth,
     sections = {
@@ -23,13 +24,16 @@ module.exports = {
      */
     router: function(request, response, next, testcallback) {
 
-        //console.log("**** in router");
+        // console.log("**** in router");
 
         // validate the game, it's set up so you can optionally
         // pass your public key in through the url which is easier
         // for testing
         var urlparams = url.parse(request.url, true);
         var publickey = urlparams.query.publickey;
+
+        // console.log("urlparams: "+ util.inspect(urlparams));
+        // console.log("publickey: "+publickey);
 
         if(!publickey)  {
             if(testcallback) {
@@ -40,6 +44,8 @@ module.exports = {
         }
 
         var config = games.load(publickey);
+
+        // console.log("config: %j",config);
 		
         if(!config) {
             if(testcallback) {
@@ -58,9 +64,9 @@ module.exports = {
             return output.terminate(payload, response, 1, "No posted data (router.js:61)");
         }
 
-        //console.log("request.body.data: "+request.body.data);
-        //console.log("request.body.hash: "+request.body.hash);
-        //console.log("config.privatekey: "+config.privatekey);
+        // console.log("request.body.data: "+request.body.data);
+        // console.log("request.body.hash: "+request.body.hash);
+        // console.log("config.privatekey: "+config.privatekey);
 
 
         var decrypted = requestauth.validate(request.body.data, request.body.hash, config.privatekey);
@@ -74,6 +80,8 @@ module.exports = {
             return output.terminate(payload, response, 1, "Invalid posted data (router.js:72)");
         }
 		
+        // console.log("decrypted: "+decrypted);
+
         var payload;
 
         try {
